@@ -7,7 +7,10 @@ package automatastarter;
 
 import utils.CardSwitcher;
 import java.awt.CardLayout;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import utils.ImageUtil;
 
 /**
  *
@@ -16,12 +19,22 @@ import javax.swing.JPanel;
 public class IntroPanel extends javax.swing.JPanel {
         public static final String CARD_NAME = "intro";
     CardSwitcher switcher = null;
+    BufferedImage img1;
     /**
      * Creates new form IntroPanel
      */
     public IntroPanel(CardSwitcher p) {
         initComponents();
         switcher = p;
+        
+        img1 = ImageUtil.loadAndResizeImage("langotn.png", 1555, 1162);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
+    }
+    
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (img1 != null) {
+            g.drawImage(img1, 0, 0, this);
+        }
     }
 
     /**
@@ -34,20 +47,19 @@ public class IntroPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         GameButton = new javax.swing.JButton();
-        infoButton = new javax.swing.JButton();
+        InfoButton = new javax.swing.JButton();
 
-        GameButton.setText("Game");
+        GameButton.setText("START GAME");
         GameButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 GameButtonActionPerformed(evt);
             }
         });
 
-        infoButton.setText("I don't know why I'm here");
-        infoButton.setToolTipText("");
-        infoButton.addActionListener(new java.awt.event.ActionListener() {
+        InfoButton.setText("INFORMATION");
+        InfoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                infoButtonActionPerformed(evt);
+                InfoButtonActionPerformed(evt);
             }
         });
 
@@ -56,37 +68,34 @@ public class IntroPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(151, 151, 151)
-                        .addComponent(GameButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(infoButton)))
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addGap(185, 185, 185)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(InfoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(GameButton, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE))
+                .addContainerGap(1049, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(GameButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(infoButton)
-                .addContainerGap(116, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(835, Short.MAX_VALUE)
+                .addComponent(GameButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(InfoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(148, 148, 148))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void GameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GameButtonActionPerformed
-       switcher.switchToCard(GamePanel.CARD_NAME);
+        switcher.switchToCard(GamePanel.CARD_NAME);
     }//GEN-LAST:event_GameButtonActionPerformed
 
-    private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
+    private void InfoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InfoButtonActionPerformed
         switcher.switchToCard(InfoPanel.CARD_NAME);
-    }//GEN-LAST:event_infoButtonActionPerformed
+    }//GEN-LAST:event_InfoButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton GameButton;
-    private javax.swing.JButton infoButton;
+    private javax.swing.JButton InfoButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -7,21 +7,36 @@ package automatastarter;
 
 import utils.CardSwitcher;
 import java.awt.CardLayout;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import utils.ImageUtil;
 
 /**
  *
  * @author michael.roy-diclemen
  */
 public class InfoPanel extends javax.swing.JPanel {
+
     public static final String CARD_NAME = "info";
     CardSwitcher switcher = null;
+    BufferedImage img1;
+
     /**
      * Creates new form IntroPanel
      */
     public InfoPanel(CardSwitcher p) {
         initComponents();
         switcher = p;
+        img1 = ImageUtil.loadAndResizeImage("langtonAntInfo.png", 1555, 1162);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
+
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (img1 != null) {
+            g.drawImage(img1, 0, 0, this);
+        }
     }
 
     /**
@@ -47,16 +62,16 @@ public class InfoPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(151, 151, 151)
-                .addComponent(backButton)
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addGap(727, 727, 727)
+                .addComponent(backButton, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                .addGap(649, 649, 649))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(backButton)
-                .addContainerGap(145, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(777, Short.MAX_VALUE)
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(329, 329, 329))
         );
     }// </editor-fold>//GEN-END:initComponents
 

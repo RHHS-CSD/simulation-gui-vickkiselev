@@ -5,6 +5,7 @@
  */
 package automatastarter;
 
+import java.awt.Color;
 import utils.CardSwitcher;
 import utils.ImageUtil;
 import java.awt.Graphics;
@@ -17,6 +18,8 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -36,21 +39,27 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
     CardSwitcher switcher; // This is the parent panel
     Timer animTimer;
-    // Image img1 = Toolkit.getDefaultToolkit().getImage("yourFile.jpg");
-    BufferedImage img1;
+    
+    // Load png of the ant
+    static BufferedImage ant;
+    
     //variables to control your animation elements
-    int x = 0;
-    int y = 10;
-    int xdir = 5;
-    int lineX = 0;
+    int x;
+    int y;
+    int speed;
+
+    LangtonAnt theAnt;
+
+    // colours to be used when drawing
+    static final Color darkerColor = new Color(67, 115, 67);
+    static final Color lighterColor = new Color(123, 166, 111);
+    static final Color antColor = new Color(133, 130, 77);
 
     /**
      * Creates new form GamePanel
      */
     public GamePanel(CardSwitcher p) {
         initComponents();
-
-        img1 = ImageUtil.loadAndResizeImage("yourFile.jpg", 300, 300);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
 
         this.setFocusable(true);
 
@@ -59,9 +68,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         //tells us the panel that controls this one
         switcher = p;
         //create and start a Timer for animation
-        animTimer = new Timer(10, new AnimTimerTick());
+        animTimer = new Timer(1000, new AnimTimerTick());
         animTimer.start();
 
+        ant = ImageUtil.loadAndResizeImage("antPng.png", 50, 50);
+        
         //set up the key bindings
         setupKeys();
 
@@ -84,10 +95,31 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (img1 != null) {
-            g.drawImage(img1, x, y, this);
+
+        if (x > 0 && speed > 0 && y > 0) {
+            theAnt = new LangtonAnt(x, y, speed, g);
+            drawGrid (theAnt.getGrid(), g, theAnt.getX(), theAnt.getY());
         }
-        g.drawLine(lineX, 0, 300, 300);
+
+    }
+
+    static void drawGrid(Boolean[][] square, Graphics g, int antX, int antY) {
+        // loops through x and y components of the grid and prints out the according colour that represents the squares state
+        for (int i = 0; i < square.length; i++) {
+            for (int j = 0; j < square[0].length; j++) {
+                if (i == antX && j == antY) {
+                    g.setColor(antColor);
+                    g.drawImage(ant, 500+i, 100+j, null);
+                    g.fillRect(500 + i * 50, 100 + j * 50, 50, 50);   // represents the ant
+                } else if (square[i][j] == true) {
+                    g.setColor(darkerColor);
+                    g.fillRect(500 + i * 50, 100 + j * 50, 50, 50);    // represents the white square
+                } else if (square[i][j] == false) {
+                    g.setColor(lighterColor);
+                    g.fillRect(500 + i * 50, 100 + j * 50, 50, 50);    // represents the black square
+                }
+            }
+        }
     }
 
     /**
@@ -99,7 +131,18 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        startButton = new javax.swing.JButton();
+        defaultOne = new javax.swing.JButton();
+        defaultTwo = new javax.swing.JButton();
+        defaultThree = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        increaseX = new javax.swing.JButton();
+        decreaseX = new javax.swing.JButton();
+        increaseY = new javax.swing.JButton();
+        decreaseY = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        increaseSpd = new javax.swing.JButton();
+        decreaseSpd = new javax.swing.JButton();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -107,33 +150,223 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             }
         });
 
-        jLabel1.setText("Game");
+        startButton.setText("START SIMULATION");
+
+        defaultOne.setBackground(new java.awt.Color(86, 108, 145));
+        defaultOne.setText("4 X 4, SPEED 1");
+        defaultOne.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                defaultOneActionPerformed(evt);
+            }
+        });
+
+        defaultTwo.setBackground(new java.awt.Color(86, 108, 145));
+        defaultTwo.setText("3 X 6, SPEED 1");
+        defaultTwo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                defaultTwoActionPerformed(evt);
+            }
+        });
+
+        defaultThree.setBackground(new java.awt.Color(86, 108, 145));
+        defaultThree.setText("10 X 10, SPEED 2");
+        defaultThree.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                defaultThreeActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("ANT'S SPEED:");
+
+        increaseX.setBackground(new java.awt.Color(162, 209, 144));
+        increaseX.setForeground(new java.awt.Color(0, 0, 0));
+        increaseX.setText("INCREASE X");
+        increaseX.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                increaseXActionPerformed(evt);
+            }
+        });
+
+        decreaseX.setBackground(new java.awt.Color(224, 111, 99));
+        decreaseX.setForeground(new java.awt.Color(0, 0, 0));
+        decreaseX.setText("DECREASE X");
+        decreaseX.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                decreaseXActionPerformed(evt);
+            }
+        });
+
+        increaseY.setBackground(new java.awt.Color(162, 209, 144));
+        increaseY.setForeground(new java.awt.Color(0, 0, 0));
+        increaseY.setText("INCREASE Y");
+        increaseY.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                increaseYActionPerformed(evt);
+            }
+        });
+
+        decreaseY.setBackground(new java.awt.Color(224, 111, 99));
+        decreaseY.setForeground(new java.awt.Color(0, 0, 0));
+        decreaseY.setText("DECREASE Y");
+        decreaseY.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                decreaseYActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("DIMENSIONS:");
+
+        increaseSpd.setBackground(new java.awt.Color(162, 209, 144));
+        increaseSpd.setForeground(new java.awt.Color(0, 0, 0));
+        increaseSpd.setText("INCREASE");
+        increaseSpd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                increaseSpdActionPerformed(evt);
+            }
+        });
+
+        decreaseSpd.setBackground(new java.awt.Color(224, 111, 99));
+        decreaseSpd.setForeground(new java.awt.Color(0, 0, 0));
+        decreaseSpd.setText("DECREASE ");
+        decreaseSpd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                decreaseSpdActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(174, 174, 174)
-                .addComponent(jLabel1)
-                .addContainerGap(199, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(increaseX, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGap(54, 54, 54)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(decreaseSpd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(decreaseY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(defaultOne, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(defaultTwo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(defaultThree, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(increaseY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(decreaseX, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(increaseSpd, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(56, 56, 56)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(1360, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(135, 135, 135)
-                .addComponent(jLabel1)
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addGap(57, 57, 57)
+                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(defaultOne, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(defaultTwo, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(defaultThree, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(increaseX, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decreaseX, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(increaseY, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decreaseY, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(increaseSpd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decreaseSpd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(495, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
-        lineX = 0;
+
     }//GEN-LAST:event_formComponentShown
+
+    private void defaultOneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultOneActionPerformed
+        // TODO add your handling code here:
+        x = 4;
+        y = 4;
+        speed = 1;
+    }//GEN-LAST:event_defaultOneActionPerformed
+
+    private void defaultTwoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultTwoActionPerformed
+        // TODO add your handling code here:
+        x = 3;
+        y = 6;
+        speed = 1;
+    }//GEN-LAST:event_defaultTwoActionPerformed
+
+    private void defaultThreeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultThreeActionPerformed
+        // TODO add your handling code here:
+        x = 10;
+        y = 10;
+        speed = 2;
+    }//GEN-LAST:event_defaultThreeActionPerformed
+
+    private void increaseXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_increaseXActionPerformed
+        // TODO add your handling code here:
+        x++;
+
+    }//GEN-LAST:event_increaseXActionPerformed
+
+    private void decreaseXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decreaseXActionPerformed
+        // TODO add your handling code here:
+        x--;
+    }//GEN-LAST:event_decreaseXActionPerformed
+
+    private void increaseYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_increaseYActionPerformed
+        // TODO add your handling code here:
+        y++;
+    }//GEN-LAST:event_increaseYActionPerformed
+
+    private void decreaseYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decreaseYActionPerformed
+        // TODO add your handling code here:
+        y--;
+    }//GEN-LAST:event_decreaseYActionPerformed
+
+    private void increaseSpdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_increaseSpdActionPerformed
+        // TODO add your handling code here:
+        speed++;
+    }//GEN-LAST:event_increaseSpdActionPerformed
+
+    private void decreaseSpdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decreaseSpdActionPerformed
+        // TODO add your handling code here:
+        speed--;
+    }//GEN-LAST:event_decreaseSpdActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton decreaseSpd;
+    private javax.swing.JButton decreaseX;
+    private javax.swing.JButton decreaseY;
+    private javax.swing.JButton defaultOne;
+    private javax.swing.JButton defaultThree;
+    private javax.swing.JButton defaultTwo;
+    private javax.swing.JButton increaseSpd;
+    private javax.swing.JButton increaseX;
+    private javax.swing.JButton increaseY;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -143,9 +376,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseClicked(MouseEvent me) {
-        System.out.println("Click: " + me.getX() + ":" + me.getY());
-        x = 5;
-        y = 5;
+
     }
 
     /**
@@ -154,7 +385,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mousePressed(MouseEvent me) {
-        System.out.println("Press: " + me.getX() + ":" + me.getY());
     }
 
     /**
@@ -163,7 +393,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseReleased(MouseEvent me) {
-        System.out.println("Release: " + me.getX() + ":" + me.getY());
+
     }
 
     /**
@@ -172,7 +402,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseEntered(MouseEvent me) {
-        System.out.println("Enter: " + me.getX() + ":" + me.getY());
+
     }
 
     /**
@@ -181,7 +411,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseExited(MouseEvent me) {
-        System.out.println("Exit: " + me.getX() + ":" + me.getY());
+
     }
 
     /**
@@ -198,14 +428,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         public void actionPerformed(ActionEvent ae) {
             // here you decide what you want to happen if a particular key is pressed
             System.out.println("llll" + key);
-            switch(key){
-                case "d": x+=2; break;
-                case "x": animTimer.stop(); switcher.switchToCard(EndPanel.CARD_NAME); break;
-            }
-            if (key.equals("d")) {
-                x = x + 2;
-            }
-            
+
         }
 
     }
@@ -217,8 +440,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     private class AnimTimerTick implements ActionListener {
 
         public void actionPerformed(ActionEvent ae) {
-            //the stuff we want to change every clock tick
-            lineX++;
+
             //force redraw
             repaint();
         }
