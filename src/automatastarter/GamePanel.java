@@ -39,10 +39,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
     CardSwitcher switcher; // This is the parent panel
     Timer animTimer;
-    
+
     // Load png of the ant
     static BufferedImage ant;
-    
+
     //variables to control your animation elements
     int x;
     int y;
@@ -51,9 +51,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     LangtonAnt theAnt;
 
     // colours to be used when drawing
-    static final Color darkerColor = new Color(67, 115, 67);
-    static final Color lighterColor = new Color(123, 166, 111);
-    static final Color antColor = new Color(133, 130, 77);
+    static final Color DARKER_COLOR = new Color(67, 115, 67);
+    static final Color LIGHTER_COLOR = new Color(123, 166, 111);
+    static final Color ANT_COLOR = new Color(133, 130, 77);
 
     /**
      * Creates new form GamePanel
@@ -71,8 +71,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         animTimer = new Timer(1000, new AnimTimerTick());
         animTimer.start();
 
-        ant = ImageUtil.loadAndResizeImage("antPng.png", 50, 50);
-        
+        ant = ImageUtil.loadAndResizeImage("antPng.png", 100, 100);
+
         //set up the key bindings
         setupKeys();
 
@@ -96,27 +96,28 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (x > 0 && speed > 0 && y > 0) {
-            theAnt = new LangtonAnt(x, y, speed, g);
-            drawGrid (theAnt.getGrid(), g, theAnt.getX(), theAnt.getY());
+        if (theAnt != null) {
+            drawGrid(theAnt.getGrid(), g, theAnt.getX(), theAnt.getY());
         }
 
     }
 
-    static void drawGrid(Boolean[][] square, Graphics g, int antX, int antY) {
+    // method to draw the grid the ant lives on
+    void drawGrid(Boolean[][] square, Graphics g, int antX, int antY) {
         // loops through x and y components of the grid and prints out the according colour that represents the squares state
         for (int i = 0; i < square.length; i++) {
             for (int j = 0; j < square[0].length; j++) {
                 if (i == antX && j == antY) {
-                    g.setColor(antColor);
-                    g.drawImage(ant, 500+i, 100+j, null);
-                    g.fillRect(500 + i * 50, 100 + j * 50, 50, 50);   // represents the ant
+                    g.setColor(ANT_COLOR);
+                    g.fillRect(500 + i * 100, 100 + j * 100, 100, 100);   // represents the ant
+                    g.drawImage(ant, 500 + i * 100, 100 + j * 100, this);
+
                 } else if (square[i][j] == true) {
-                    g.setColor(darkerColor);
-                    g.fillRect(500 + i * 50, 100 + j * 50, 50, 50);    // represents the white square
+                    g.setColor(LIGHTER_COLOR);
+                    g.fillRect(500 + i * 100, 100 + j * 100, 100, 100);    // represents the white square
                 } else if (square[i][j] == false) {
-                    g.setColor(lighterColor);
-                    g.fillRect(500 + i * 50, 100 + j * 50, 50, 50);    // represents the black square
+                    g.setColor(DARKER_COLOR);
+                    g.fillRect(500 + i * 100, 100 + j * 100, 100, 100);    // represents the black square
                 }
             }
         }
@@ -131,7 +132,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        startButton = new javax.swing.JButton();
         defaultOne = new javax.swing.JButton();
         defaultTwo = new javax.swing.JButton();
         defaultThree = new javax.swing.JButton();
@@ -143,14 +143,17 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         jLabel3 = new javax.swing.JLabel();
         increaseSpd = new javax.swing.JButton();
         decreaseSpd = new javax.swing.JButton();
+        startSim = new javax.swing.JButton();
+        endSim1 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        currentArg = new javax.swing.JLabel();
 
+        setPreferredSize(new java.awt.Dimension(1555, 1162));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);
             }
         });
-
-        startButton.setText("START SIMULATION");
 
         defaultOne.setBackground(new java.awt.Color(86, 108, 145));
         defaultOne.setText("4 X 4, SPEED 1");
@@ -169,7 +172,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         });
 
         defaultThree.setBackground(new java.awt.Color(86, 108, 145));
-        defaultThree.setText("10 X 10, SPEED 2");
+        defaultThree.setText("7 X 7, SPEED 2");
         defaultThree.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 defaultThreeActionPerformed(evt);
@@ -234,50 +237,67 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             }
         });
 
+        startSim.setText("START SIMULATION");
+        startSim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startSimActionPerformed(evt);
+            }
+        });
+
+        endSim1.setText("END SIMULATION");
+        endSim1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                endSim1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("CURRENT:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(increaseX, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGap(54, 54, 54)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addComponent(decreaseSpd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(decreaseY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(defaultOne, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(defaultTwo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(defaultThree, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(increaseY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(decreaseX, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(increaseSpd, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(increaseX, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(defaultOne, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(defaultTwo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(defaultThree, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(startSim, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(endSim1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(decreaseSpd, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                        .addComponent(increaseSpd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(decreaseX, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(decreaseY, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(increaseY, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(56, 56, 56)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(currentArg, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(1360, Short.MAX_VALUE))
+                .addContainerGap(1340, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(57, 57, 57)
-                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(101, 101, 101)
+                .addComponent(startSim, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(endSim1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
                 .addComponent(defaultOne, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(defaultTwo, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(defaultThree, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(increaseX, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -293,7 +313,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
                 .addComponent(increaseSpd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(decreaseSpd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(495, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(currentArg, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addContainerGap(299, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -317,11 +341,12 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
     private void defaultThreeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultThreeActionPerformed
         // TODO add your handling code here:
-        x = 10;
-        y = 10;
+        x = 7;
+        y = 7;
         speed = 2;
     }//GEN-LAST:event_defaultThreeActionPerformed
 
+    // the following button methods are to raise and lower the x and y values of the grid and raise and lower the speed
     private void increaseXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_increaseXActionPerformed
         // TODO add your handling code here:
         x++;
@@ -353,20 +378,37 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         speed--;
     }//GEN-LAST:event_decreaseSpdActionPerformed
 
+    // method to move the ant around
+    private void startSimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSimActionPerformed
+        // TODO add your handling code here:
+        if (x > 0 && y > 0 && speed > 0) {
+            theAnt = new LangtonAnt(x, y, speed);
+        }
+    }//GEN-LAST:event_startSimActionPerformed
+
+    // button to exit the simulation and go to end panel
+    private void endSim1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endSim1ActionPerformed
+        // TODO add your handling code here:
+        switcher.switchToCard(EndPanel.CARD_NAME);
+    }//GEN-LAST:event_endSim1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel currentArg;
     private javax.swing.JButton decreaseSpd;
     private javax.swing.JButton decreaseX;
     private javax.swing.JButton decreaseY;
     private javax.swing.JButton defaultOne;
     private javax.swing.JButton defaultThree;
     private javax.swing.JButton defaultTwo;
+    private javax.swing.JButton endSim1;
     private javax.swing.JButton increaseSpd;
     private javax.swing.JButton increaseX;
     private javax.swing.JButton increaseY;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JButton startButton;
+    private javax.swing.JButton startSim;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -440,6 +482,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     private class AnimTimerTick implements ActionListener {
 
         public void actionPerformed(ActionEvent ae) {
+            // if the ant object isn't null, move it per timer tick
+            if (theAnt != null) {
+                // turn the ant and move it
+                theAnt.moveAnt();
+                System.out.print(theAnt);
+            }
+            
+            // display current statistics of the ant sim on a label on panel
+            currentArg.setText("X,Y: " + x + "," + y + "\nSpeed:" + speed);
 
             //force redraw
             repaint();

@@ -31,7 +31,7 @@ public class LangtonAnt {
     /**
      * @param args the command line arguments
      */
-    public LangtonAnt(int x, int y, int spd, Graphics g) {
+    public LangtonAnt(int x, int y, int spd) {
 
         antSpeed = spd;
         grid = new Boolean[x][y];
@@ -41,24 +41,8 @@ public class LangtonAnt {
             Arrays.fill(grid[i], true);
         }
 
-        // counts amount of cycles the ant will go through
-        int count = 0;
-
-        // will end after 10 cycles of ant movement
-        while (count < 11) {
-
-            // turn the ant and move it
-            turnAnt();
-            moveAnt();
-
-            // set the current part of the grid where the ant is on to the opposite
-            grid[antX][antY] = !grid[antX][antY];
-
-            // increase the count of cycles
-            count++;
-        }
     }
-    
+
 // getters for variables
     public Boolean[][] getGrid() {
         return grid;
@@ -72,67 +56,76 @@ public class LangtonAnt {
         return antY;
     }
 
-    // prints the grid based on what is in the array
-    private static void printGrid(Boolean[][] square) {
-        // loops through x and y components of the grid and prints out the according symbol that represents the spots state
-        for (int i = 0; i < square.length; i++) {
-            for (int j = 0; j < square[0].length; j++) {
-                if (i == antX && j == antY) {
-                    System.out.print("[ ooo<]");    // represents the and
-                } else if (square[i][j] == true) {
-                    System.out.print("[  W  ]");    // represents the white square
-                } else if (square[i][j] == false) {
-                    System.out.print("[  B  ]");    // represents the black square
-                }
-            }
-
-            System.out.print("\n");
-        }
-    }
-
     // change ant's location based on what direction the ant is facing
-    private static void moveAnt() {
+    public void moveAnt() {
 
+        this.turnAnt();
+        System.out.println(antDirection + antX + antY);
+
+        /*
         // moves the ant by the inputted speed depending on the direction it is facing
-        // uses a toroidal grid, so when ant walks off edge it goes to opposite side
         switch (antDirection) {
             case "right":
-                if (antX < (grid[0].length - 1) - antSpeed) {
+                if (antX <= (grid[0].length - 1) - antSpeed) {
                     antX += antSpeed;
-                    // adjust the formula slightly for if the ant is at the very edge of the grid
-                } else if (antX == grid[0].length - 1) {
-                    antX = antSpeed - 1;
-                } else {
-                    // if the ant exceeds the grid's bounds, take the value, find the amount of squares it goes out of bounds, and then add that to the other side of the grid
-                    // change the below formula correspondingly for each direction
-                    antX = antSpeed + antX - (grid[0].length - 1);
                 }
                 break;
             case "left":
                 if (antX >= antSpeed) {
                     antX -= antSpeed;
-                } else if (antX == 0) {
-                    antX = grid[0].length - antSpeed;
-                } else {
-                    antX = (grid[0].length - 1) + (antX - antSpeed);
                 }
                 break;
             case "up":
                 if (antY >= antSpeed) {
                     antY -= antSpeed;
-                } else if (antY == 0) {
-                    antY = grid[0].length - antSpeed;
-                } else {
-                    antY = (grid.length - 1) + (antY - antSpeed);
                 }
                 break;
             case "down":
-                if (antY <= (grid[0].length - 1) - antSpeed) {
+                if (antY <= (grid.length - 1) - antSpeed) {
                     antY += antSpeed;
-                } else if (antY == grid[0].length - 1) {
-                    antY = antSpeed - 1;
+                }
+                break;
+            default:
+                break;
+        }
+         */
+        
+        // moves the ant by the inputted speed depending on the direction it is facing
+        // uses a toroidal grid, so when ant walks off edge it goes to opposite side
+        switch (antDirection) {
+            case "right":
+                if (antX <= (grid[0].length - 1) - antSpeed) {
+                    antX += antSpeed;
+                    // adjust the formula slightly for if the ant is at the very edge of the grid
                 } else {
-                    antY = (antSpeed + antY) - (grid.length - 1);
+                    // if the ant exceeds the grid's bounds, take the value, find the amount of squares it goes out of bounds, and then add that to the other side of the grid
+                    // change the below formula correspondingly for each direction
+                    antX += antSpeed;
+                    antX = antX - (grid[0].length);
+                }
+                break;
+            case "left":
+                if (antX >= antSpeed) {
+                    antX -= antSpeed;
+                } else {
+                    antX -= antSpeed;
+                    antX = (grid[0].length) + antX;
+                }
+                break;
+            case "up":
+                if (antY >= antSpeed) {
+                    antY -= antSpeed;
+                } else {
+                    antY -= antSpeed;
+                    antY = (grid.length) + antY;
+                }
+                break;
+            case "down":
+                if (antY <= (grid.length - 1) - antSpeed) {
+                    antY += antSpeed;
+                } else {
+                    antY += antSpeed;
+                    antY = antY - (grid.length);
                 }
                 break;
             default:
@@ -142,17 +135,20 @@ public class LangtonAnt {
     }
 
     // turns the ant based on the type of square it is standing on
-    private static void turnAnt() {
+    public void turnAnt() {
         // if the grid spot is white, turn the ant right
         if (grid[antX][antY] == true) {
             turnRight();
-        } else if (grid[antX][antY] == false) {    // if the grid spot is black, turn the ant left
+        } else {    // if the grid spot is black, turn the ant left
             turnLeft();
         }
+
+        grid[antX][antY] = !grid[antX][antY];
+        System.out.println(antDirection + antX + antY);
     }
 
     // turns the ant right based on its previous direction
-    private static void turnRight() {
+    public void turnRight() {
         switch (antDirection) {
             case "right":
                 antDirection = "down"; // if facing right, turn to face down
@@ -172,7 +168,7 @@ public class LangtonAnt {
     }
 
     // turns the ant left based on its previous direction
-    private static void turnLeft() {
+    public void turnLeft() {
         switch (antDirection) {
             case "right":
                 antDirection = "up";  // if facing right, turn to face up

@@ -33,29 +33,51 @@ public class EndPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         againButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
-        againButton.setText("PlayAgain");
+        setPreferredSize(new java.awt.Dimension(1555, 1162));
+
+        againButton.setText("EXIT GAME");
+        againButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                againButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("THANKS FOR PLAYING");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(156, 156, 156)
-                .addComponent(againButton)
-                .addContainerGap(165, Short.MAX_VALUE))
+                .addGap(580, 580, 580)
+                .addComponent(againButton, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addGap(733, 733, 733))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(638, 638, 638)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(136, 136, 136)
-                .addComponent(againButton)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addGap(429, 429, 429)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(againButton, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                .addGap(587, 587, 587))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void againButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_againButtonActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_againButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton againButton;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
